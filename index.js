@@ -58,10 +58,11 @@ app.post("/api/users", async (req, res) => {
   }
 }); 
 
-app.post("/api/users/:_id/exercises", (req, res) => {
+app.post("/api/users/:_id/exercises", async (req, res) => {
   // Push exercise with id from request body to MongoDB
   // Getting inputted userId from input, but need to check it again
-  const userId = req.body._id;
+  const userId = req.body[':_id'];
+  console.log("inputted User id" + userId);
 
   // Getting inputted exercise description from post body
   const exerciseDescription = req.body.description;
@@ -74,7 +75,18 @@ app.post("/api/users/:_id/exercises", (req, res) => {
 
   // Checking whether id existed in db or not, if not, send an error
   // if yes, push to Mongo and send the inputted message
-  // if ()
+  const isExisted = await UserMongoDB.findOne({ _id: userId });
+  if (isExisted) {
+    logHistory = isExisted.log;
+    // logHistory.push({
+    //   description: exerciseDescription,
+    //   duration: exerciseDuration,
+    //   date: exerciseDate.
+    // })
+    console.log(exerciseDate.toDateString());
+  } else {
+    res.send({ error: "non-existed ID" });
+  }
 });
 
 app.get("/api/users/:_id/logs", (req, res) => {
