@@ -111,10 +111,10 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 
     res.send({
       username: isExisted.username,
+      _id: userId,
       description: exerciseDescription,
       duration: exerciseDuration,
-      date: dateInputted, 
-      _id: userId
+      date: dateInputted
     })
   } else {
     res.send({ error: "non-existed ID" });
