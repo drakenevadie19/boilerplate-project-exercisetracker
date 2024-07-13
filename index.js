@@ -38,6 +38,15 @@ const UserMongoDB = mongoose.model('UserMongoDB', userSchema);
 
 let logHistory = [];
 
+app.get("/api/users", async (req, res) => {
+  const listOfAllUsersInfo = await UserMongoDB.find();
+  let listOfAllUsers = [];
+  listOfAllUsersInfo.map((user) => {
+    listOfAllUsers.push({ username: user.username, _id: user._id });
+  })
+  res.send(listOfAllUsers);
+});
+
 app.post("/api/users", async (req, res) => {
   // Push user with username from request body to MongoDB
   // Getting inputted username
