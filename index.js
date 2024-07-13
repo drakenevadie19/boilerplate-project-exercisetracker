@@ -78,12 +78,28 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   const isExisted = await UserMongoDB.findOne({ _id: userId });
   if (isExisted) {
     logHistory = isExisted.log;
-    // logHistory.push({
-    //   description: exerciseDescription,
-    //   duration: exerciseDuration,
-    //   date: exerciseDate.
-    // })
-    console.log(exerciseDate.toDateString());
+    const dateInGMTFrom = new Date(exerciseDate);
+    const date = dateInGMTFrom.toDateString();
+    logHistory.push({
+      description: exerciseDescription,
+      duration: exerciseDuration,
+      date: date
+    });
+
+    const result = await UserMongoDB.updateOne(
+      { _id: userId }, 
+      { $push: { log: logHistory } }
+    )
+      .then((res) => console.log("Push successfully"))
+      .catch(err => console.log(err));
+
+    res.send({
+      username: isExisted.username,
+      description: exerciseDescription,
+      duration: exerciseDuration,
+      date: date, 
+      _id: userId
+    })
   } else {
     res.send({ error: "non-existed ID" });
   }
