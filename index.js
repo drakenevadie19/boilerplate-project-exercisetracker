@@ -105,9 +105,20 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   }
 });
 
-app.get("/api/users/:_id/logs", (req, res) => {
+app.get("/api/users/:_id/logs", async (req, res) => {
+  // test: https://3000-freecodecam-boilerplate-7vh7vhgqosc.ws-us115.gitpod.io/api/users/6691ba3813788562c879fd41/logs
   const userId = req.params._id;
   // Log all info of that user
+  const userLog = await UserMongoDB.findOne({ _id: userId });
+  if (!userLog) {
+    res.send({ error: "id not exist, try again" });
+  } else {
+    res.send({
+      username: userLog.username,
+      count: userLog.log.length,
+      log: userLog.log
+    });
+  }
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
