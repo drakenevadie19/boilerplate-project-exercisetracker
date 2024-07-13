@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     {
       description: { type: String, required: true },
       duration: { type: Number, required: true },
-      date: { type: Date, required: true }
+      date: { type: String, required: true }
     }
   ]
 });
@@ -70,7 +70,7 @@ app.post("/api/users", async (req, res) => {
 app.post("/api/users/:_id/exercises", async (req, res) => {
   // Push exercise with id from request body to MongoDB
   // Getting inputted userId from input, but need to check it again
-  const userId = req.body[':_id'];
+  const userId = req.params._id;
   console.log("inputted User id" + userId);
 
   // Getting inputted exercise description from post body
@@ -87,12 +87,19 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   const isExisted = await UserMongoDB.findOne({ _id: userId });
   if (isExisted) {
     logHistory = isExisted.log;
-    const dateInGMTFrom = new Date(exerciseDate);
-    const date = dateInGMTFrom.toDateString();
+    let dateInputted;
+    let dateInGMTFrom;
+    if (exerciseDate === "") {
+      dateInGMTFrom = new Date();
+    } else {
+      dateInGMTFrom = new Date(exerciseDate);
+    }
+    
+    dateInputted = dateInGMTFrom.toDateString();
     logHistory.push({
       description: exerciseDescription,
       duration: exerciseDuration,
-      date: date
+      date: dateInputted
     });
 
     const result = await UserMongoDB.updateOne(
@@ -106,7 +113,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       username: isExisted.username,
       description: exerciseDescription,
       duration: exerciseDuration,
-      date: date, 
+      date: dateInputted, 
       _id: userId
     })
   } else {
@@ -115,18 +122,28 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 });
 
 app.get("/api/users/:_id/logs", async (req, res) => {
-  // test: https://3000-freecodecam-boilerplate-7vh7vhgqosc.ws-us115.gitpod.io/api/users/6691ba3813788562c879fd41/logs
+  // test: https://3000-freecodecam-boilerplate-7vh7vhgqosc.ws-us115.gitpod.io/api/users/6691ba3813788562c879fd47/logs
   const userId = req.params._id;
   // Log all info of that user
   const userLog = await UserMongoDB.findOne({ _id: userId });
   if (!userLog) {
     res.send({ error: "id not exist, try again" });
   } else {
+    let exercisesOfUser = [];
+
+    userLog.log.map((user) => {
+      exercisesOfUser.push({
+        description: user.description,
+        duration: user.duration,
+        date: user.date
+      });
+    })
+
     res.send({
       username: userLog.username,
       count: userLog.log.length,
       _id: userId,
-      log: userLog.log
+      log: exercisesOfUser
     });
   }
 })
