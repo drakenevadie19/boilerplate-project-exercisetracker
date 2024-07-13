@@ -116,6 +116,7 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     res.send({
       username: userLog.username,
       count: userLog.log.length,
+      _id: userId,
       log: userLog.log
     });
   }
