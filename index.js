@@ -111,7 +111,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 
     res.send({
       username: isExisted.username,
-      _id: userId,
+      _id: userId, 
       description: exerciseDescription,
       duration: exerciseDuration,
       date: dateInputted
@@ -132,10 +132,12 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     let exercisesOfUser = [];
 
     userLog.log.map((user) => {
+      let dateInputted = new Date(user.date);
+      let convertedDate = dateInputted.toDateString();
       exercisesOfUser.push({
         description: user.description,
         duration: user.duration,
-        date: user.date
+        date: convertedDate
       });
     })
 
