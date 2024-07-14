@@ -106,7 +106,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       { _id: userId }, 
       { $push: { log: logHistory } }
     )
-      .then((res) => {
+      .then((response) => {
         res.send({
           username: isExisted.username,
           _id: userId, 
