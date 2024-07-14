@@ -132,26 +132,21 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
     
     const exercise = {
-      "description": description,
-      "duration": duration,
-      "date": dateInputted
+      description,
+      duration,
+      date: dateInputted
     };
     
     userGet.log.push(exercise);
     await userGet.save();
 
-    res.json(
-      {
-        "returnRes": 
-          {
-            "username": userGet.username,
-            "_id": userGet._id,
-            "description": description,
-            "duration": duration,
-            "date": dateInputted
-          }
-      }
-    );
+    res.json({
+      username: userGet.username,
+      description,
+      duration,
+      date: dateInputted,
+      _id: userGet._id
+    });
   } catch (err) {
     res.status(500).send({ error: 'Internal Server Error' });
   }
@@ -170,11 +165,11 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     let log = userLog.log;
 
     if (from || to) {
-      const fromDate = new Date(from);
-      const toDate = new Date(to);
+      const fromDate = from ? new Date(from) : new Date(0);
+      const toDate = to ? new Date(to) : new Date();
       log = log.filter(exercise => {
         const exerciseDate = new Date(exercise.date);
-        return (!from || exerciseDate >= fromDate) && (!to || exerciseDate <= toDate);
+        return exerciseDate >= fromDate && exerciseDate <= toDate;
       });
     }
 
@@ -190,7 +185,7 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 
     res.send({
       username: userLog.username,
-      count: userLog.log.length,
+      count: log.length,
       _id: userId,
       log: exercisesOfUser
     });
