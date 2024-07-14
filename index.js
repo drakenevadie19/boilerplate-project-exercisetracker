@@ -244,15 +244,15 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     }
 
     const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
-    userGet.log.push({ description, duration, date: dateInputted });
+    userGet.log.push({ description: description, duration: duration, date: dateInputted });
 
     await userGet.save();
 
     res.json({
       username: userGet.username,
       _id: userId,
-      description,
-      duration,
+      description: description,
+      duration: duration,
       date: dateInputted
     });
   } catch (err) {
