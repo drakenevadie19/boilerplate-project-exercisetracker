@@ -36,8 +36,6 @@ const userSchema = new mongoose.Schema({
 
 const UserMongoDB = mongoose.model('UserMongoDB', userSchema);
 
-let logHistory = [];
-
 app.get("/api/users", async (req, res) => {
   const listOfAllUsersInfo = await UserMongoDB.find();
   let listOfAllUsers = [];
@@ -84,41 +82,41 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 
   // Checking whether id existed in db or not, if not, send an error
   // if yes, push to Mongo and send the inputted message
-  const isExisted = await UserMongoDB.findOne({ _id: userId });
-  if (isExisted) {
-    logHistory = isExisted.log;
-    let dateInputted;
-    let dateInGMTFrom;
-    if (!exerciseDate) {
-      dateInGMTFrom = new Date();
-    } else {
-      dateInGMTFrom = new Date(exerciseDate);
-    }
-    
-    dateInputted = dateInGMTFrom.toDateString();
-    logHistory.push({
-      description: exerciseDescription,
-      duration: exerciseDuration,
-      date: dateInputted
-    });
+  const userGet = await UserMongoDB.findOne({ _id: userId });
 
-    const result = await UserMongoDB.updateOne(
-      { _id: userId }, 
-      { $push: { log: logHistory } }
-    )
-      .then((response) => {
-        res.send({
-          username: isExisted.username,
-          _id: userId, 
-          description: exerciseDescription,
-          duration: exerciseDuration,
-          date: dateInputted
+  try {
+    if (userGet) {
+      let logHistory = userGet.log;
+
+      let dateInputted = !exerciseDate ? new Date().toDateString() : new Date(exerciseDate).toDateString()
+
+      logHistory.push({
+        description: exerciseDescription,
+        duration: exerciseDuration,
+        date: dateInputted
+      });
+  
+      const result = await UserMongoDB.updateOne(
+        { _id: userId }, 
+        { $push: { log: logHistory } }
+      )
+        .then((response) => {
+          res.send({
+            username: isExisted.username,
+            _id: userId, 
+            description: exerciseDescription,
+            duration: exerciseDuration,
+            date: dateInputted
+          })
         })
-      })
-      .catch(err => console.log(err));
-  } else {
-    res.send({ error: "non-existed ID" });
+        .catch(err => console.log(err));
+    } else {
+      res.send({ error: "non-existed ID" });
+    }
+  } catch (err) {
+    res.send({ error: err });
   }
+  
 });
 
 app.get("/api/users/:_id/logs", async (req, res) => {
