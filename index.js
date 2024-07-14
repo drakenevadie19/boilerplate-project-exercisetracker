@@ -69,7 +69,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   // Push exercise with id from request body to MongoDB
   // Getting inputted userId from input, but need to check it again
   const userId = req.params._id;
-  console.log("inputted User id " + userId);
+  // console.log("inputted User id " + userId);
 
   // Getting inputted exercise description from post body
   const exerciseDescription = req.body.description;
@@ -102,7 +102,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       )
         .then((response) => {
           res.send({
-            username: isExisted.username,
+            username: userGet.username,
             _id: userId, 
             description: exerciseDescription,
             duration: exerciseDuration,
