@@ -254,13 +254,18 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     userGet.log.push(exercise);
     await userGet.save();
 
-    res.json({
-      "username": userGet.username,
-      "_id": userGet._id,
-      "description": description,
-      "duration": duration,
-      "date": date ? dateInputted : null
-    });
+    res.json(
+      {
+        "returnRes": 
+          {
+            "username": userGet.username,
+            "_id": userGet._id,
+            "description": description,
+            "duration": duration,
+            "date": date ? dateInputted : null
+          }
+      }
+    );
   } catch (err) {
     res.status(500).send({ error: 'Internal Server Error' });
   }
