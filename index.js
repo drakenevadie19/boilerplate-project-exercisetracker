@@ -243,8 +243,8 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       return res.status(404).send({ error: "Non-existed ID" });
     }
 
-    const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
-    userGet.log.push({ description: description, duration: duration, date: dateInputted });
+    // const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
+    userGet.log.push({ description: description, duration: duration, date: date ? new Date(date).toDateString() : new Date().toDateString() });
 
     await userGet.save();
 
@@ -253,7 +253,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       _id: userId,
       description: description,
       duration: duration,
-      date: dateInputted
+      date: date ? new Date(date).toDateString() : new Date().toDateString()
     });
   } catch (err) {
     res.status(500).send({ error: 'Internal Server Error' });
