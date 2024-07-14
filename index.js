@@ -101,14 +101,11 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
         { $push: { log: logHistory } }
       )
       res.json({
-        "username": userGet.username,
-        "_id": userId, 
-        "Exercise fields added": 
-          {
-            description: exerciseDescription,
-            duration: exerciseDuration,
-            date: dateInputted
-          }
+        username: userGet.username,
+        _id: userId, 
+        description: exerciseDescription,
+        duration: exerciseDuration,
+        date: dateInputted
       });
     } else {
       res.send({ error: "non-existed ID" });
