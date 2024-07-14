@@ -71,7 +71,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   // Push exercise with id from request body to MongoDB
   // Getting inputted userId from input, but need to check it again
   const userId = req.params._id;
-  console.log("inputted User id" + userId);
+  console.log("inputted User id " + userId);
 
   // Getting inputted exercise description from post body
   const exerciseDescription = req.body.description;
@@ -89,7 +89,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     logHistory = isExisted.log;
     let dateInputted;
     let dateInGMTFrom;
-    if (exerciseDate === "") {
+    if (!exerciseDate) {
       dateInGMTFrom = new Date();
     } else {
       dateInGMTFrom = new Date(exerciseDate);
@@ -106,22 +106,41 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       { _id: userId }, 
       { $push: { log: logHistory } }
     )
-      .then((res) => console.log("Push successfully"))
+      .then((res) => {
+        res.send({
+          username: isExisted.username,
+          _id: userId, 
+          description: exerciseDescription,
+          duration: exerciseDuration,
+          date: dateInputted
+        })
+      })
       .catch(err => console.log(err));
-
-    res.send({
-      _id: userId, 
-      username: isExisted.username,
-      description: exerciseDescription,
-      duration: exerciseDuration,
-      date: dateInputted
-    })
   } else {
     res.send({ error: "non-existed ID" });
   }
 });
 
 app.get("/api/users/:_id/logs", async (req, res) => {
+
+  // const { from, to, limit } = req.query;
+
+  // let dateObj = {}
+  // if (from) {
+  //   dateObj["$gte"] = new Date(from)
+  // }
+  // if (to){
+  //   dateObj["$lte"] = new Date(to)
+  // }
+  // let filter = {
+  //   user_id: id
+  // }
+  // if(from || to){
+  //   filter.date = dateObj;
+  // }
+
+  // const exercises = await UserMongoDB.find(filter).limit(+limit ?? 500);
+
   // test: https://3000-freecodecam-boilerplate-7vh7vhgqosc.ws-us115.gitpod.io/api/users/6691ba3813788562c879fd47/logs
   const userId = req.params._id;
   // Log all info of that user
@@ -132,11 +151,13 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     let exercisesOfUser = [];
 
     userLog.log.map((user) => {
-      exercisesOfUser.push({
-        description: user.description,
-        duration: user.duration,
-        date: new Date(user.date).toDateString()
-      });
+      exercisesOfUser.push(
+        {
+          description: user.description,
+          duration: user.duration,
+          date: new Date(user.date).toDateString()
+        }
+      );
     })
 
     res.send({
