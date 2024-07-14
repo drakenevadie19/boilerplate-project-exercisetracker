@@ -243,15 +243,14 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
       return res.status(404).send({ error: "Non-existed ID" });
     }
 
-    // const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
-    // userGet.log.push({ description: description, duration: duration, date: date ? new Date(date).toDateString() : new Date().toDateString() });
-
+    const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
+    
     const exercise = {
-      description: description,
-      duration: duration,
+      description,
+      duration,
       date: dateInputted
     };
-
+    
     userGet.log.push(exercise);
     await userGet.save();
 
