@@ -262,7 +262,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
             "_id": userGet._id,
             "description": description,
             "duration": duration,
-            "date": date ? dateInputted : null
+            "date": dateInputted
           }
       }
     );
