@@ -255,11 +255,11 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     await userGet.save();
 
     res.json({
-      username: userGet.username,
-      description: exercise.description,
-      duration: exercise.duration,
-      date: exercise.date,
-      _id: userGet._id
+      "username": userGet.username,
+      "_id": userGet._id,
+      "description": exercise.description,
+      "duration": exercise.duration,
+      "date": exercise.date
     });
   } catch (err) {
     res.status(500).send({ error: 'Internal Server Error' });
