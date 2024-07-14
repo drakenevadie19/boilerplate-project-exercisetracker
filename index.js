@@ -260,9 +260,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
           {
             "username": userGet.username,
             "_id": userGet._id,
-            "description": description,
-            "duration": duration,
-            "date": dateInputted
+            "log": exercise
           }
       }
     );
