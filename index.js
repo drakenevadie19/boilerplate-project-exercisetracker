@@ -115,47 +115,47 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   }
 });
 
-// app.post("/api/users/:_id/exercises", async (req, res) => {
-//   try {
-//     const userId = req.params._id;
-//     const { description, duration, date } = req.body;
+app.post("/api/users/:_id/exercises", async (req, res) => {
+  try {
+    const userId = req.params._id;
+    const { description, duration, date } = req.body;
 
-//     if (!description || !duration) {
-//       return res.status(400).send({ error: 'Description and duration are required' });
-//     }
+    if (!description || !duration) {
+      return res.status(400).send({ error: 'Description and duration are required' });
+    }
 
-//     const userGet = await UserMongoDB.findById(userId);
-//     if (!userGet) {
-//       return res.status(404).send({ error: "Non-existed ID" });
-//     }
+    const userGet = await UserMongoDB.findById(userId);
+    if (!userGet) {
+      return res.status(404).send({ error: "Non-existed ID" });
+    }
 
-//     const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
+    const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
     
-//     const exercise = {
-//       "description": description,
-//       "duration": duration,
-//       "date": dateInputted
-//     };
+    const exercise = {
+      "description": description,
+      "duration": duration,
+      "date": dateInputted
+    };
     
-//     userGet.log.push(exercise);
-//     await userGet.save();
+    userGet.log.push(exercise);
+    await userGet.save();
 
-//     res.json(
-//       {
-//         "returnRes": 
-//           {
-//             "username": userGet.username,
-//             "_id": userGet._id,
-//             "description": description,
-//             "duration": duration,
-//             "date": dateInputted
-//           }
-//       }
-//     );
-//   } catch (err) {
-//     res.status(500).send({ error: 'Internal Server Error' });
-//   }
-// });
+    res.json(
+      {
+        "returnRes": 
+          {
+            "username": userGet.username,
+            "_id": userGet._id,
+            "description": description,
+            "duration": duration,
+            "date": dateInputted
+          }
+      }
+    );
+  } catch (err) {
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
 
 app.get("/api/users/:_id/logs", async (req, res) => {
   try {
