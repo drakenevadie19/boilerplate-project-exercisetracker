@@ -244,16 +244,23 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     }
 
     // const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
-    userGet.log.push({ description: description, duration: duration, date: date ? new Date(date).toDateString() : new Date().toDateString() });
+    // userGet.log.push({ description: description, duration: duration, date: date ? new Date(date).toDateString() : new Date().toDateString() });
 
+    const exercise = {
+      description: description,
+      duration: duration,
+      date: dateInputted
+    };
+
+    userGet.log.push(exercise);
     await userGet.save();
 
     res.json({
       username: userGet.username,
-      _id: userId,
-      description: description,
-      duration: duration,
-      date: date ? new Date(date).toDateString() : new Date().toDateString()
+      description: exercise.description,
+      duration: exercise.duration,
+      date: exercise.date,
+      _id: userGet._id
     });
   } catch (err) {
     res.status(500).send({ error: 'Internal Server Error' });
