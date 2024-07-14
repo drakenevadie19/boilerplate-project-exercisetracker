@@ -246,9 +246,9 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     const dateInputted = date ? new Date(date).toDateString() : new Date().toDateString();
     
     const exercise = {
-      description,
-      duration,
-      date: dateInputted
+      "description": description,
+      "duration": duration,
+      "date": dateInputted
     };
     
     userGet.log.push(exercise);
